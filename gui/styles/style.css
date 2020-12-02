@@ -1,0 +1,143 @@
+body{
+    margin: 0;
+    background: #3c6997;
+}
+
+.hdr {
+    margin-top: 15%;
+    text-align: center;
+    color: seashell;
+}
+.container {
+    text-align: center;
+}
+
+.hdr-form {
+    margin-left: 25%;
+    color: seashell;
+}
+
+.form-container{
+    display: inline-block;
+    background: #ffdd4a;
+    text-align: center;
+    width: 40%;
+    margin-left: 25%;
+    padding: 2em;
+    height: 500px;
+    
+}
+
+.main-btn { 
+    transition-duration: 0.5s;
+    
+    border: 2px solid #663A00;
+    display: block;
+    width: 40%;
+    height: 40%;
+    text-align: center;
+    text-decoration: none;
+    background: #fe9000;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: x-large;
+    font-weight: bold;
+    color: black;
+    margin-top: 1em;
+    padding-top: 2em;
+    padding-bottom: 2em;
+    margin-left: 30%;
+
+}
+
+.main-btn:hover {
+    background: #ffdd4a;
+}
+
+.form-elem{
+    height: 1.5em;
+    padding: 0.5em;
+    
+}
+.add-btn {
+    display: inline-block;
+    padding: 0.3em;
+    border-radius: 10%;
+    text-decoration: none;
+    text-align: center;
+    background: #094074;
+    color: seashell;
+    width: 5%;
+}
+
+.form-txt{
+    height: 100%;
+    line-height: 100%;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: large;
+    border-style: solid;
+    border-radius: 10%;
+}
+
+.add-btn:hover {
+    background: #5adbff;
+    color: black;
+
+}
+
+ul{
+    list-style: none;
+    
+}
+
+.deleteLink {
+    margin-left: 10%;
+    text-decoration: none;
+
+}
+
+.deleteLink:hover{
+    text-decoration: underline;
+}
+
+#animemsg {
+    font-size: small;
+    color: red;
+    font-style: italic;
+}
+
+#cluster {
+    display: block;
+    cursor: pointer;
+    transition-duration: 0.4s;
+    border: 2px solid #663A00;
+    border-radius: 2%;
+    width: 40%;
+    height: 20%;
+    text-align: center;
+    text-decoration: none;
+    background: #fe9000;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: x-large;
+    font-weight: bold;
+    color: black;
+    margin-top: 1em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    margin-left: 30%;
+
+}
+
+#cluster:hover {
+    background: #cca700;
+}
+
+
+.list-container {
+    display: inline-block;
+    margin-left: 0;
+    background: white;
+    vertical-align: top;
+    width: 25%;
+    height: 500px;
+    overflow-x: auto;
+}
