@@ -1,5 +1,6 @@
 from processing.proc import *
-from backend.user import *
+from backend.user_recommeder import *
+import pickle
 
 # Executed only once during the lifetime of the application
 c = oneTimeProcessing()
@@ -20,3 +21,5 @@ print("You might also be interested in the following shows")
 
 for show in recommendations:
     print(show)
+
+pickle.dump(c, open("../dataset/clusters.p", "wb"))

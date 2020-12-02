@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 from algorithms.kmeans.kmeans import *
 
@@ -8,10 +9,9 @@ from algorithms.kmeans.kmeans import *
 def oneTimeProcessing():
     
     # read the three files:
-
-    anime = pd.read_csv('dataset/anime_cleaned.csv')
-    userlist = pd.read_csv('dataset/animelists_cleaned.csv')
-    user = pd.read_csv('dataset/users_cleaned.csv')
+    anime = pd.read_csv('../dataset/anime_cleaned.csv')
+    userlist = pd.read_csv('../dataset/animelists_cleaned.csv')
+    user = pd.read_csv('../dataset/users_cleaned.csv')
 
     # removing irrelevant features from each of the three files:
 

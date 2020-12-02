@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New User | Find My Anime</title>
-    <link rel="stylesheet" href="styles/style.css"></link>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}"></link>
 </head>
 <body>
     <div class="hdr-form">
@@ -12,9 +12,8 @@
         <p>Please fill in the information below</p>
     </div>
     <div>
-
         <div class="form-container">
-            <form action="cluster.py" method="POST">
+            <form action="/" method="POST">
                 <div class="form-elem">
                     <label>Favorite Anime(s): </label><input type="text" class="form-txt" name="fav-anim" id="fav-anim" /> <a href="#" id="addToFav" name="addToFav" class="add-btn">Add</a>
                     <div id="animemsg"></div>
@@ -32,11 +31,13 @@
             </form>
         </div>
         <div class="list-container">
-            Anime List: 
+            Anime List:
             <ul id="animeList"></ul>
-        
+            {% for item in data %}
+            <ul>{{item}}</ul>
+            {% endfor %}
         </div>
     </div>
 </body>
-<script src="scripts/script.js"></script>
+<script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
 </html>

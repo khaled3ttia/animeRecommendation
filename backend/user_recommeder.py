@@ -1,3 +1,5 @@
+import pickle
+import os
 # TODO get the list of shows that the user likes from the backend
 #user_likes = getUserLikes()
 
@@ -6,9 +8,10 @@
 # takes the following arguments:
 #       c: the dataframe with final clusters
 #       user_likes: a list of shows the user already likes (from frontend)
-def getRecommendations(c, user_likes):
+def getRecommendations(c, user_likes=None):
 
-    user_likes = ['Paprika', 'Princess Tutu', 'Seto no Hanayome']
+    if user_likes is None:
+        user_likes = ['Paprika', 'Princess Tutu', 'Seto no Hanayome']
 
     cluster_belongs_to = []
     for anime_history in user_likes:
@@ -35,4 +38,20 @@ def getRecommendations(c, user_likes):
             recommendations.add(recommended_anime)
     
     return recommendations
-    
+
+
+def get_recommendation_for_show(like, all_clusters, min_shows=5):
+    for cluster in all_clusters:
+        for show in cluster:
+            if like == show:
+                if len(cluster) > min_shows + 1:
+                    clusterout = cluster.copy()
+                    clusterout.remove(like)
+                    return clusterout
+
+
+def get_recommendation_hierarchical(user_likes, all_clusters):
+    recommendation = []
+    for like in user_likes:
+        recommendation.extend(get_recommendation_for_show(like, all_clusters))
+    return recommendation
