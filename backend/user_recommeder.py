@@ -8,11 +8,10 @@ import os
 # takes the following arguments:
 #       c: the dataframe with final clusters
 #       user_likes: a list of shows the user already likes (from frontend)
-def getRecommendations(c, user_likes=None):
-
-    if user_likes is None:
-        user_likes = ['Paprika', 'Princess Tutu', 'Seto no Hanayome']
-
+def getRecommendations(c, user_likes):
+    #if user_likes is None:
+    #    user_likes = ['Paprika', 'Princess Tutu', 'Seto no Hanayome']
+    
     cluster_belongs_to = []
     for anime_history in user_likes:
         score=[]
@@ -23,8 +22,10 @@ def getRecommendations(c, user_likes=None):
                 score.append(c[i][anime_history])
             else:
                 print("Anime name not found in the db")
-                break
+                return ["Sorry, could not find the shows you entered in our database :("]
+
         anime_belongs_to = max( (val, idx) for idx, val in enumerate(score))[1]
+
         if anime_belongs_to not in cluster_belongs_to:
             cluster_belongs_to.append(max( (val, idx) for idx, val in enumerate(score))[1])
 
@@ -35,8 +36,13 @@ def getRecommendations(c, user_likes=None):
     for target_cluster in cluster_belongs_to:
         anime_shows = c[target_cluster][0:10].index.format()
         for recommended_anime in anime_shows:
-            recommendations.add(recommended_anime)
+            if recommended_anime not in user_likes:
+                recommendations.add(recommended_anime)
     
+    print("length of recommendations is: " , len(recommendations))
+    if (len(recommendations) == 0):
+        recommendations.add("Sorry, could not find the shows you entered in our database :(")
+
     return recommendations
 
 
