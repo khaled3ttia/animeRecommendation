@@ -17,19 +17,24 @@ def index():
 
     print(favorite_anime)
     if favorite_anime != [None]:
-        if clustering_type == "kmeans":
-            recommendations = getRecommendations(c, favorite_anime)
+
+        #
+        try:
+            # Get the recommendations for that anime
+            if clustering_type == "kmeans":
+                recommendations = getRecommendations(c, favorite_anime)
+            else:
+                recommendations = get_recommendation_hierarchical(favorite_anime, all_clusters)
+        except (TypeError, ValueError):
+            recommendations = None
+
+        if recommendations is not None:
             # for now let's just print the recommendations
             print("You might also be interested in the following shows")
             for show in recommendations:
                 print(show)
-        else:
-            recommendations = get_recommendation_hierarchical(favorite_anime, all_clusters)
-            print("You might also be interested in the following shows")
-            for show in recommendations:
-                print(show)
+            return render_template(file_to_render, data=recommendations)
 
-        return render_template(file_to_render, data=recommendations)
     return render_template(file_to_render)
 
 

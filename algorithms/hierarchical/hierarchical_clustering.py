@@ -6,6 +6,7 @@ import math
 import pickle
 import os
 
+
 def get_min_distance(a, b, matrix, uniques):
     if type(a) is str:
         a = [uniques.index(a)]
@@ -149,7 +150,6 @@ def distance_to_matrix():
 if __name__ == '__main__':
     load = False
     num_anime = 10
-
 
     if load:
         (linkage, all_clusters, uniques) = pickle.load(open("../../data/top_" + str(num_anime) + ".p", "rb"))
