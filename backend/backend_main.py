@@ -5,10 +5,9 @@ from user_recommeder import getRecommendations, get_recommendation_hierarchical
 
 app = Flask(__name__)
 file_to_render = "new.html"
-#app.static_folder = os.path.dirname(os.getcwd())+"\\gui"
-#app.template_folder = os.path.dirname(os.getcwd())+"\\gui"
 app.static_folder = "../gui"
 app.template_folder = "../gui"
+
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -18,8 +17,9 @@ def index():
 
     print(favorite_anime)
     if favorite_anime != [None]:
-
-        #
+        # Run this in a try catch loop to catch errors when anime are missing.
+        # TODO: fix bugs in getRecommendations and get_recommendation_hierarchical when anime are missing.
+        #  After the list is fixed
         try:
             # Get the recommendations for that anime
             if clustering_type == "kmeans":
