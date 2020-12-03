@@ -24,10 +24,18 @@ body{
     width: 40%;
     margin-left: 25%;
     padding: 2em;
-    height: 500px;
     
 }
 
+.recommendations{
+    display: block;
+    width: 40%;
+    margin-left: 25%;
+    padding: 2em;
+    text-align: center;
+    background: #ffdd4a;
+
+}
 .main-btn { 
     transition-duration: 0.5s;
     
@@ -105,13 +113,17 @@ ul{
     font-style: italic;
 }
 
+.submitDiv {
+    text-align: center;
+}
+
 #cluster {
     display: block;
     cursor: pointer;
     transition-duration: 0.4s;
     border: 2px solid #663A00;
     border-radius: 2%;
-    width: 40%;
+    width: 22%;
     height: 20%;
     text-align: center;
     text-decoration: none;
@@ -120,10 +132,9 @@ ul{
     font-size: x-large;
     font-weight: bold;
     color: black;
-    margin-top: 1em;
     padding-top: 1em;
     padding-bottom: 1em;
-    margin-left: 30%;
+    margin-left: 35%;
 
 }
 
@@ -138,6 +149,5 @@ ul{
     background: white;
     vertical-align: top;
     width: 25%;
-    height: 500px;
     overflow-x: auto;
 }

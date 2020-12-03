@@ -8,40 +8,50 @@
 </head>
 <body>
     <div class="hdr-form">
-        <h1>New User</h1>
+        <h1>Get Anime Recommendations</h1>
         <p>Please fill in the information below</p>
     </div>
-    <div>
-        <div class="form-container">
-            <form action="/" method="POST">
-                <div class="form-elem">
-                    <label>Favorite Anime(s): </label><input type="text" class="form-txt" name="fav-anim" id="fav-anim" /> <a href="#" id="addToFav" name="addToFav" class="add-btn">Add</a>
-                    <div id="animemsg"></div>
-                </div>
-                <div class="form-elem">
-                    <label>Clustering Algorithm: </label>
-                    <select name="algo" id="algo">
-                        <option value="kmeans">K-Means</option>
-                        <option value="dbscan">Hierarchial Clustering</option>
-                    </select>
-                    <div id="animemsg"></div>
-                </div>
-		        <div class="list-container">
-			    Anime List:
-		    <ul id="animeList"></ul>
-			</div>
+    <form action="/" method="POST">
+    <div class="form-container">
 
-                <input id="cluster" type="submit" value="Find my Anime!">
-            </form>
-        </div>
+            <div class="form-elem">
+                <label>Favorite Anime(s): </label>
+                <input type="text" class="form-txt" name="fav-anim" id="fav-anim" /> 
+                <a href="#" id="addToFav" name="addToFav" class="add-btn">Add</a>
+
+                    <div id="animemsg"></div>
+            </div>
+
+            <div class="form-elem">
+                <label>Clustering Algorithm: </label>
+                <select name="algo" id="algo">
+                    <option value="kmeans">K-Means</option>
+                    <option value="dbscan">Hierarchial Clustering</option>
+                </select>
+                <div id="animemsg"></div>
+            </div>
     </div>
-		<div class="list-container">
-			    Anime List:
-		    <ul id="animeList"></ul>
-		    {% for item in data %}
-		    <ul>{{item}}</ul>
-		    {% endfor %}
-			</div>
+                <div class="list-container">
+			        Anime List:
+		            <ul id="animeList"></ul>
+			    </div>
+            <div class="submitDiv">
+                <input id="cluster" type="submit" value="Find my Anime!">
+            </div>
+           
+
+    </form>
+    
+	{% if data %}
+	<div class="recommendations">
+		<h3>You might be interested in the following shows:</h3>
+		    <ul id="animeList">
+		        {% for item in data %}
+		        <li>{{item}}</li>
+                {% endfor %}
+            </ul>
+	</div>
+	{% endif %}
 
 </body>
 <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
