@@ -26,18 +26,23 @@
                     </select>
                     <div id="animemsg"></div>
                 </div>
+		        <div class="list-container">
+			    Anime List:
+		    <ul id="animeList"></ul>
+			</div>
 
                 <input id="cluster" type="submit" value="Find my Anime!">
             </form>
         </div>
-        <div class="list-container">
-            Anime List:
-            <ul id="animeList"></ul>
-            {% for item in data %}
-            <ul>{{item}}</ul>
-            {% endfor %}
-        </div>
     </div>
+		<div class="list-container">
+			    Anime List:
+		    <ul id="animeList"></ul>
+		    {% for item in data %}
+		    <ul>{{item}}</ul>
+		    {% endfor %}
+			</div>
+
 </body>
 <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
 </html>

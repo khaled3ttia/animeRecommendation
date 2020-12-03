@@ -13,7 +13,7 @@ app.template_folder = "../gui"
 @app.route("/", methods=['GET', 'POST'])
 def index():
     print(request.values)
-    favorite_anime = [request.form.get("fav-anim")]
+    favorite_anime = request.form.getlist("animeList")
     clustering_type = request.form.get("algo")
 
     print(favorite_anime)
