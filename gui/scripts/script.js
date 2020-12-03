@@ -1,10 +1,12 @@
 const favAnimeText = document.querySelector("#fav-anim");
 const animeList = document.querySelector("#animeList");
 var container = document.querySelector(".form-container");
+
 var i = 0; 
 
 function addToList(){
     var currentAnime = favAnimeText.value;
+    
 
     if (currentAnime === ''){
         document.querySelector("#animemsg").innerHTML = 'No items to add';
@@ -19,11 +21,20 @@ function addToList(){
         deleteLink.setAttribute('id', 'dlanime'+i);
         deleteLink.setAttribute('class', 'deleteLink');
         deleteLink.setAttribute('onclick', 'deleteAnime(' + i + ')');
-    
+   
+
+	var hiddenInput = document.createElement('input');
+	hiddenInput.setAttribute('type', 'hidden');
+	hiddenInput.setAttribute('name', 'animeList');
+	hiddenInput.setAttribute('value', currentAnime);
+	
         animeEntry.setAttribute('id', 'anime'+i);
         i++;
         animeEntry.appendChild(document.createTextNode(currentAnime));
+	
         animeEntry.appendChild(deleteLink);
+	animeEntry.appendChild(hiddenInput);
+
         animeList.appendChild(animeEntry);
         
         favAnimeText.value = '';
