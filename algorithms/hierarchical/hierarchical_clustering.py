@@ -2,11 +2,12 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 from scipy.cluster import hierarchy
-import math
+from user_recommeder import get_recommendation_hierarchical
 import pickle
 import os
 
 
+# Gets the minimum distance between two clusters.
 def get_min_distance(a, b, matrix, uniques):
     if type(a) is str:
         a = [uniques.index(a)]
@@ -30,6 +31,7 @@ def get_min_distance(a, b, matrix, uniques):
     return minimum, min_i, min_j
 
 
+# Gets the maximum distance between two clusters
 def get_max_distance(a, b, matrix, uniques):
     try:
         if type(a) is str:
@@ -58,19 +60,20 @@ def get_max_distance(a, b, matrix, uniques):
     return maximum, min_i, min_j
 
 
-def sse(data):
-    mean = 0
-    for i in range(len(data)):
-        for j in range(i + 1, len(data)):
-            mean += matrix[data[i], data[j]] / len(data)
+# def sse(data):
+#     mean = 0
+#     for i in range(len(data)):
+#         for j in range(i + 1, len(data)):
+#             mean += matrix[data[i], data[j]] / len(data)
+#
+#     error = 0
+#     for i in range(len(data)):
+#         for j in range(i + 1, len(data)):
+#             error += (matrix[data[i], data[j]] - mean) ** 2
+#     return error
 
-    error = 0
-    for i in range(len(data)):
-        for j in range(i + 1, len(data)):
-            error += (matrix[data[i], data[j]] - mean) ** 2
-    return error
 
-
+# Takes in a matrix of distances between elements and a list of the element names.
 def hierarchical_clustering(matrix, uniques):
     clusters = uniques
     n = len(clusters)
@@ -133,7 +136,7 @@ def hierarchical_clustering(matrix, uniques):
 
 
 # Reconstruct distance measures into Distance Matrix
-def distance_to_matrix():
+def distance_to_matrix(anime_distance):
     size = len(anime_distance['show_1'].dropna().unique())
     matrix = np.identity(size)
     uniques = list(anime_distance['show_1'].dropna().unique())
@@ -147,20 +150,64 @@ def distance_to_matrix():
     return matrix, uniques
 
 
-if __name__ == '__main__':
-    load = False
-    num_anime = 10
+# Make a plot of the dendrogram and zoom to the selected show
+def plot_tree(group, linkage, all_clusters, uniques, suffix=""):
+    plt.figure(figsize=(15, 15))
+    plt.title("Popular Anime Dendrogram")
+    plt.xlabel("Distance")
 
+    # Make the dendrogram
+    dendrogram = hierarchy.dendrogram(linkage, orientation='left', leaf_font_size=8, labels=np.array(uniques))
+
+    # Get the information to zoom the dendrogram
+    shows = get_recommendation_hierarchical(group, all_clusters)
+    shows.extend(group)
+
+    x, y = [], []
+    for c, pi, d in zip(dendrogram['color_list'], dendrogram['icoord'], dendrogram['dcoord']):
+        for leg in pi[1:3]:
+            i = (leg - 5.0) / 10.0
+            if abs(i - int(i)) < 1e-5:
+                name = dendrogram['ivl'][int(i)]
+                if name in shows:
+                    x.append(0.5 * sum(pi[1:3]))
+                    y.append(d[1])
+
+    # Zoom the plot to the correct part and make sure the show names display
+    plt.ylim(min(x) - 10, max(x) + 10)
+    plt.xlim(max(y) + .3, 0)
+    plt.tight_layout()
+
+    # Save out the figure
+    name = "dendrogram" + str(group) + ".png"
+    location = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(__file__)))))
+    file_path = location + "\\gui\\" + name
+    print(file_path)
+
+    for filename in os.listdir(location + "\\gui\\"):
+        print(filename)
+        if filename.startswith("dendrogram"):
+            os.remove(location + "\\gui\\" + filename)
+
+    plt.savefig(file_path)
+    return name
+
+
+# Load or construct the data needed for the dendogram
+def get_dendogram(load=True, num_anime=250):
     if load:
         (linkage, all_clusters, uniques) = pickle.load(open("../../data/top_" + str(num_anime) + ".p", "rb"))
     else:
         anime_distance = pd.read_csv("../../data/anime_distance_" + str(num_anime) + ".csv")
-        matrix, uniques = distance_to_matrix()
+        matrix, uniques = distance_to_matrix(anime_distance)
         linkage, end_clusters, all_clusters = hierarchical_clustering(matrix, uniques)
         pickle.dump((linkage, all_clusters, uniques), open("../../data/top_" + str(num_anime) + ".p", "wb"))
 
-    plt.figure(figsize=(20, 12))
-    plt.title("Popular Anime Dendrogram")
-    plt.xlabel("Distance")
-    hierarchy.dendrogram(linkage, orientation='left', leaf_font_size=8, labels=np.array(uniques))
-    plt.show()
+    return linkage, all_clusters, uniques
+
+
+# Run this file independently for testing
+if __name__ == '__main__':
+    linkage, all_clusters, uniques = get_dendogram()
+    group = ['Ghost in the Shell']
+    plot_tree(group, linkage, all_clusters, uniques)

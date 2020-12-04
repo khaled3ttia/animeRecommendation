@@ -53,6 +53,15 @@
 	</div>
 	{% endif %}
 
+	{% if img %}
+	<div class="dendrogram">
+		<h3>Graphical list:</h3>
+        {% for item in img %}
+        <img src="{{url_for('static', filename=item)}}" alt="dendrogram">
+        {% endfor %}
+	</div>
+	{% endif %}
+
 </body>
 <script src="{{ url_for('static', filename='scripts/script.js') }}"></script>
 </html>

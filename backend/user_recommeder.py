@@ -1,9 +1,3 @@
-import pickle
-import os
-# TODO get the list of shows that the user likes from the backend
-#user_likes = getUserLikes()
-
-
 # a function to return the recommendations
 # takes the following arguments:
 #       c: the dataframe with final clusters
@@ -46,6 +40,8 @@ def getRecommendations(c, user_likes):
     return recommendations
 
 
+# Returns the cluster that contains the element with at least min_shows.
+# Returned cluster does not contain the element.
 def get_recommendation_for_show(like, all_clusters, min_shows=5):
     for cluster in all_clusters:
         for show in cluster:
@@ -56,8 +52,11 @@ def get_recommendation_for_show(like, all_clusters, min_shows=5):
                     return clusterout
 
 
+# Returns a list of recommendations for each element in user_likes.
 def get_recommendation_hierarchical(user_likes, all_clusters):
     recommendation = []
     for like in user_likes:
-        recommendation.extend(get_recommendation_for_show(like, all_clusters))
+        recc = get_recommendation_for_show(like, all_clusters)
+        if recc:
+            recommendation.extend(recc)
     return recommendation

@@ -3,7 +3,7 @@
 # Created by: Scott Kersh
 # Created on: 11/21/2020
 
-should_load_csv <- TRUE
+should_load_csv <- FALSE
 should_save_rdat <- FALSE
 should_load_rdat <- FALSE
 should_filter_lists <- TRUE
@@ -33,20 +33,20 @@ if(should_load_rdat){
 if(should_filter_lists) {
   print("Filtering lists")
   # Only select the 100 most popular anime to speed up computation
-  anime_list_filtered <- anime_list[anime_list$popularity <= 10,]
+  anime_list_filtered <- anime_list[anime_list$popularity <= 500,]
   anime_list_filtered <- anime_list_filtered[anime_list_filtered$members > 1000,]
   anime_list_filtered <- anime_list_filtered["anime_id"]
 
   # Get a sample of 100,000 users to speed up computation
   user_list_filtered <- user_list
-  user_list_filtered <- user_list[sample(nrow(user_list), 100000, replace=TRUE),]
+  user_list_filtered <- user_list[sample(nrow(user_list), 1000, replace=TRUE),]
 
   user_anime_list_filtered <- user_anime_list
   print(length(user_anime_list_filtered$username))
   # Select the lines from our sampled users
   user_anime_list_filtered <- user_anime_list_filtered[user_anime_list_filtered$username %in% user_list_filtered$username,]
   # Select only the anime that meet our popularity requrements
-  user_anime_list_filtered <- user_anime_list[user_anime_list$anime_id %in% anime_list_filtered$anime_id,]
+  user_anime_list_filtered <- user_anime_list_filtered[user_anime_list_filtered$anime_id %in% anime_list_filtered$anime_id,]
   # Only select anime that have been set to completed
   user_anime_list_filtered <- user_anime_list_filtered[user_anime_list_filtered$my_status == 2,]
   print(length(user_anime_list_filtered$username))
@@ -63,15 +63,16 @@ distance <- function (id1, id2) {
   # One Piece is broken for some reason still diagnosing
   if(is.nan(distance)) {
     distance <- 0
-  } else if(anime_list[anime_list$anime_id == id1,]$title_english == "One Piece" | anime_list[anime_list$anime_id == id2,]$title_english == "One Piece" ) {
-    print(mutual[user_anime_list_filtered$anime_id == id1,])
-    cat("\nTotal Rows", nrow(mutual))
-    cat("\nTotal Intersection", combined)
-    cat("\nNumber 1", anime_list[anime_list$anime_id == id1,]$title_english, unique_1)
-    cat("\nNumber 2", anime_list[anime_list$anime_id == id2,]$title_english, unique_2)
-    cat("\nDistance:", distance)
-    cat("\n")
+    #print(id1)
+    #print(id2)
+    #cat("\nTotal Rows", nrow(mutual))
+    #cat("\nTotal Intersection", combined)
+    #cat("\nNumber 1", anime_list[anime_list$anime_id == id1,]$title_english, unique_1)
+    #cat("\nNumber 2", anime_list[anime_list$anime_id == id2,]$title_english, unique_2)
+    #cat("\nDistance:", distance)
+    #cat("\n")
   }
+
   return(distance)
 }
 
@@ -108,15 +109,18 @@ if(should_calc_mutual){
                                                anime_list[anime_list$anime_id == anime_list_filtered$anime_id[i],]$title_english,
                                                dist)
       k <- k + 1
+      if(k %% 2000 == 0){
+        print(k)
+      }
     }
   }
 }
 
 # Make clusters using built in R for testing!
 # print(mat)
-#test <- as.dist(mat)
-#hc1 <- hclust(test, method = "complete")
-#plot(hc1)
+test <- as.dist(mat)
+hc1 <- hclust(test, method = "complete")
+plot(hc1)
 
 print("Printing!")
-write.csv(distance_frame, "../dataset/anime_distance_10.csv", row.names = FALSE)
+write.csv(distance_frame, "data/anime_distance_500.csv", row.names = FALSE)
