@@ -19,25 +19,21 @@ def index():
     print(favorite_anime)
     if favorite_anime:
         # Run this in a try catch loop to catch errors when anime are missing.
-        # TODO: fix bugs in getRecommendations and get_recommendation_hierarchical when anime are missing.
-        #  After the list is fixed
-        # try:
-        # Get the recommendations for that anime
-        if clustering_type == "kmeans":
-            recommendations = getRecommendations(c, favorite_anime)
+        try:
+            # Get the recommendations for that anime
+            if clustering_type == "kmeans":
+                recommendations = getRecommendations(c, favorite_anime)
+                image = None
+            else:
+                recommendations = get_recommendation_hierarchical(favorite_anime, all_clusters)
+                image = []
+                for i, item in enumerate(favorite_anime):
+                    if item in all_clusters:
+                        image.append(hc.plot_tree([item], linkage, all_clusters, uniques, i))
+        except (TypeError, ValueError):
+            print("Error")
+            recommendations = None
             image = None
-        else:
-            recommendations = get_recommendation_hierarchical(favorite_anime, all_clusters)
-            print(favorite_anime)
-            image = []
-            for i, item in enumerate(favorite_anime):
-                if item in all_clusters:
-                    image.append(hc.plot_tree([item], linkage, all_clusters, uniques, i))
-                    # {{url_for('static', filename=item)}}
-        # except (TypeError, ValueError):
-        #     print("Error")
-        #     recommendations = None
-        #     image = None
 
         if recommendations is not None:
             # for now let's just print the recommendations

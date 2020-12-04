@@ -47,9 +47,10 @@ def get_recommendation_for_show(like, all_clusters, min_shows=5):
         for show in cluster:
             if like == show:
                 if len(cluster) > min_shows + 1:
-                    clusterout = cluster.copy()
-                    clusterout.remove(like)
-                    return clusterout
+                    if type(cluster) is not str:
+                        clusterout = cluster.copy()
+                        clusterout.remove(like)
+                        return clusterout
 
 
 # Returns a list of recommendations for each element in user_likes.
@@ -59,4 +60,6 @@ def get_recommendation_hierarchical(user_likes, all_clusters):
         recc = get_recommendation_for_show(like, all_clusters)
         if recc:
             recommendation.extend(recc)
+    if len(recommendation) == 0:
+        recommendation.append("Sorry, could not find the shows you entered in our database :(")
     return recommendation
