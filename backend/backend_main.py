@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 import os
 import pickle
 from user_recommeder import getRecommendations, get_recommendation_hierarchical
-import algorithms.hierarchical.hierarchical_clustering as hc
+import hierarchical_clustering as hc
 
 app = Flask(__name__)
 file_to_render = "new.html"

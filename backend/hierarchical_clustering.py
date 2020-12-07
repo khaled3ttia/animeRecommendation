@@ -184,14 +184,17 @@ def plot_tree(group, linkage, all_clusters, uniques, suffix=""):
 
     # Save out the figure
     name = "dendrogram" + str(group) + ".png"
-    location = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(__file__)))))
-    file_path = location + "\\gui\\" + name
+    #location = os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(os.path.abspath(__file__)))))
+    #file_path = location + "\\gui\\" + name
+    file_path = "../gui/" + name
     print(file_path)
 
-    for filename in os.listdir(location + "\\gui\\"):
+    #for filename in os.listdir(location + "\\gui\\"):
+    for filename in os.listdir('../gui'):
         print(filename)
         if filename.startswith("dendrogram"):
-            os.remove(location + "\\gui\\" + filename)
+            os.remove("../gui/" + filename)
+            #os.remove(location + "\\gui\\" + filename)
 
     plt.savefig(file_path)
     return name
