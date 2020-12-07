@@ -154,3 +154,17 @@ li {
     width: 25%;
     overflow-x: auto;
 }
+
+.dend {
+   width: 100%;
+
+}
+
+.dendrogram {
+    display: block;
+    width: 40%;
+    margin-left: 25%;
+    padding: 2em;
+    text-align: center;
+    background: #ffdd4a;
+}

@@ -57,7 +57,7 @@
 	<div class="dendrogram">
 		<h3>Graphical list:</h3>
         {% for item in img %}
-        <img src="{{url_for('static', filename=item)}}" alt="dendrogram">
+        <img class="dend" src="{{url_for('static', filename=item)}}" alt="dendrogram">
         {% endfor %}
 	</div>
 	{% endif %}
