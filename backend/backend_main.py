@@ -10,6 +10,7 @@ app.static_folder = "../gui"
 app.template_folder = "../gui"
 
 
+# Main routine of the program, called whenever data is sent to the server.
 @app.route("/", methods=['GET', 'POST'])
 def index():
     print(request.values)
@@ -41,6 +42,7 @@ def index():
             for show in recommendations:
                 print(show)
 
+            # Return the data to the html
             if image is not None:
                 return render_template(file_to_render, data=recommendations, img=image)
             else:
@@ -49,6 +51,7 @@ def index():
     return render_template(file_to_render)
 
 
+# Initialize needed data for the backend
 if __name__ == '__main__':
     print(os.getcwd())
     c = pickle.load(open("../data/clusters.p", "rb"))

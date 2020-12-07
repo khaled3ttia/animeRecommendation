@@ -200,6 +200,7 @@ def plot_tree(group, linkage, all_clusters, uniques, suffix=""):
     return name
 
 
+# Makes a plot of the full dendrogram tree
 def plot_full_tree(linkage, all_clusters, uniques):
     plt.figure(figsize=(5, 5))
     plt.title("             Top 25 Popular Anime Dendrogram\nMAX distance")
@@ -227,6 +228,7 @@ def get_dendogram(load=True, num_anime=500):
     return linkage, all_clusters, uniques, matrix
 
 
+# Calculates the total distance between shows in each cluster and the SSE
 def total_distance(a, matrix, uniques):
     try:
         if type(a) is str:
@@ -256,6 +258,7 @@ def total_distance(a, matrix, uniques):
     return distance, error
 
 
+# Gets the SSE of our clusters and genre clusters and plots them.
 def evaluation():
     anime_genre = pd.read_csv("../../data/anime_genre.csv").dropna()
 
