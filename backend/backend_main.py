@@ -52,5 +52,5 @@ def index():
 if __name__ == '__main__':
     print(os.getcwd())
     c = pickle.load(open("../data/clusters.p", "rb"))
-    (linkage, all_clusters, uniques) = pickle.load(open("../data/top_250.p", "rb"))
+    (linkage, all_clusters, uniques, matrix) = pickle.load(open("../data/top_500.p", "rb"))
     app.run()

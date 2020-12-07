@@ -141,12 +141,16 @@ def distance_to_matrix(anime_distance):
     matrix = np.identity(size)
     uniques = list(anime_distance['show_1'].dropna().unique())
 
+    k = 0
     for i in range(len(uniques)):
         for j in range(i + 1, len(uniques)):
             show1 = anime_distance.loc[anime_distance['show_1'] == uniques[i]]
             both = show1.loc[show1['show_2'] == uniques[j]]
             matrix[i, j] = both['distance'].iloc[0]
             matrix[j, i] = both['distance'].iloc[0]
+            k += 1
+            if k % 1000 == 0:
+                print(k)
     return matrix, uniques
 
 
@@ -193,21 +197,132 @@ def plot_tree(group, linkage, all_clusters, uniques, suffix=""):
     return name
 
 
-# Load or construct the data needed for the dendogram
-def get_dendogram(load=True, num_anime=250):
-    if load:
-        (linkage, all_clusters, uniques) = pickle.load(open("../../data/top_" + str(num_anime) + ".p", "rb"))
-    else:
-        anime_distance = pd.read_csv("../../data/anime_distance_" + str(num_anime) + ".csv")
-        matrix, uniques = distance_to_matrix(anime_distance)
-        linkage, end_clusters, all_clusters = hierarchical_clustering(matrix, uniques)
-        pickle.dump((linkage, all_clusters, uniques), open("../../data/top_" + str(num_anime) + ".p", "wb"))
+def plot_full_tree(linkage, all_clusters, uniques):
+    plt.figure(figsize=(5, 5))
+    plt.title("             Top 25 Popular Anime Dendrogram\nMAX distance")
+    plt.xlabel("Distance")
+    # Make the dendrogram
+    dendrogram = hierarchy.dendrogram(linkage, orientation='left', leaf_font_size=8, labels=np.array(uniques))
+    plt.tight_layout()
+    plt.savefig("dendrogram.png")
 
-    return linkage, all_clusters, uniques
+
+# Load or construct the data needed for the dendogram
+def get_dendogram(load=True, num_anime=500):
+    if load:
+        (linkage, all_clusters, uniques, matrix) = pickle.load(open("../../data/top_" + str(num_anime) + ".p", "rb"))
+    else:
+        anime_distance = pd.read_csv("../../data/jaccard_anime_distance_" + str(num_anime) + ".csv")
+        print("Loaded anime_distance")
+        matrix, uniques = distance_to_matrix(anime_distance)
+        print("Calculated Distance Matrix")
+        linkage, end_clusters, all_clusters = hierarchical_clustering(matrix, uniques)
+        print("Clustered Anime")
+        pickle.dump((linkage, all_clusters, uniques, matrix), open("../../data/top_" + str(num_anime) + ".p", "wb"))
+        print("Saved data")
+
+    return linkage, all_clusters, uniques, matrix
+
+
+def total_distance(a, matrix, uniques):
+    try:
+        if type(a) is str:
+            a = [uniques.index(a)]
+        else:
+            a = [uniques.index(i) for i in list(a) if i in uniques]
+    except TypeError:
+        print(a)
+        print(matrix)
+        print(uniques)
+
+    distance = 0
+
+    for i in range(len(a)-1):
+        for j in range(i+1, len(a)):
+            distance += matrix[a[i], a[j]]
+
+    mean = 0
+    for i in range(len(a)):
+        for j in range(i + 1, len(a)):
+            mean += matrix[a[i], a[j]] / len(a)
+
+    error = 0
+    for i in range(len(a)):
+        for j in range(i + 1, len(a)):
+            error += (matrix[a[i], a[j]] - mean) ** 2
+    return distance, error
+
+
+def evaluation():
+    anime_genre = pd.read_csv("../../data/anime_genre.csv").dropna()
+
+    my_clusters_x = []
+    my_clusters_y = []
+    for cluster in all_clusters:
+        d, e = total_distance(cluster, matrix, uniques)
+        if type(cluster) == str:
+            continue
+        if e < 1 * 10 ** 8 and len(cluster) > 1:
+            my_clusters_x.append(e)
+            my_clusters_y.append(len(cluster))
+            print(len(cluster), d, e)
+            if e == 0:
+                print(cluster)
+
+    genre_set = set()
+    for genres in anime_genre['genre']:
+        for genre in genres.split(", "):
+            genre_set.add(genre)
+
+    genre_set = list(genre_set)
+
+    all_genre_clusters = []
+    for genre in genre_set:
+        new_genre_cluster = []
+        for show, genres in zip(anime_genre['title_english'], anime_genre['genre']):
+            if genre in genres.split(", "):
+                new_genre_cluster.append(show)
+        all_genre_clusters.append(new_genre_cluster)
+
+    genre_clusters_x = []
+    genre_clusters_y = []
+    for i, cluster in enumerate(all_genre_clusters):
+        d, e = total_distance(cluster, matrix, uniques)
+        print(genre_set[i], len(cluster), d, e)
+        genre_clusters_x.append(e)
+        genre_clusters_y.append(len(cluster))
+
+    my_clusters_x = np.array(my_clusters_x)
+    my_clusters_y = np.array(my_clusters_y)
+
+    plt.clf()
+    plt.scatter(my_clusters_x, my_clusters_y)
+    plt.scatter(genre_clusters_x, genre_clusters_y)
+    plt.xlim(-100, 10000)
+    plt.ylim(0, 25)
+    plt.ylabel("Number of Shows in Cluster")
+    plt.xlabel("SSE of cluster")
+    plt.title("Number of Shows vs SSE")
+    plt.legend(["Hierarchical Clusters", "Genre Clusters"])
+
+    plt.figure(2)
+    plt.scatter(my_clusters_x, my_clusters_y)
+    plt.scatter(genre_clusters_x, genre_clusters_y)
+    plt.xlim(-100, 3 * 10 ** 7)
+    plt.ylim(0, 200)
+    plt.ylabel("Number of Shows in Cluster")
+    plt.xlabel("SSE of cluster")
+    plt.legend(["Hierarchical Clusters", "Genre Clusters"])
+    plt.title("Number of Shows vs SSE")
+    plt.show()
 
 
 # Run this file independently for testing
 if __name__ == '__main__':
-    linkage, all_clusters, uniques = get_dendogram()
+    linkage, all_clusters, uniques, matrix = get_dendogram(True, 500)
+
     group = ['Ghost in the Shell']
-    plot_tree(group, linkage, all_clusters, uniques)
+    plot_full_tree(linkage, all_clusters, uniques)
+    evaluation()
+
+

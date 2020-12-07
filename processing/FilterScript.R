@@ -7,7 +7,7 @@ should_load_csv <- FALSE
 should_save_rdat <- FALSE
 should_load_rdat <- FALSE
 should_filter_lists <- TRUE
-should_calc_mutual <- TRUE
+should_calc_mutual <- FALSE
 
 
 if(should_load_csv){
@@ -35,11 +35,11 @@ if(should_filter_lists) {
   # Only select the 100 most popular anime to speed up computation
   anime_list_filtered <- anime_list[anime_list$popularity <= 500,]
   anime_list_filtered <- anime_list_filtered[anime_list_filtered$members > 1000,]
-  anime_list_filtered <- anime_list_filtered["anime_id"]
+  anime_list_filtered <- anime_list_filtered[c("title_english","genre")]
 
   # Get a sample of 100,000 users to speed up computation
   user_list_filtered <- user_list
-  user_list_filtered <- user_list[sample(nrow(user_list), 1000, replace=TRUE),]
+  user_list_filtered <- user_list[sample(nrow(user_list), 10000, replace=TRUE),]
 
   user_anime_list_filtered <- user_anime_list
   print(length(user_anime_list_filtered$username))
@@ -52,13 +52,14 @@ if(should_filter_lists) {
   print(length(user_anime_list_filtered$username))
 }
 
-# Get the distance between two anime by determining how their userbases corrolate, uses cosine simularity.
+# Get the distance between two anime by determining how their userbases corrolate, uses Jaccard Distance.
 distance <- function (id1, id2) {
   mutual <- user_anime_list_filtered[user_anime_list_filtered$anime_id == id1 | user_anime_list_filtered$anime_id == id2,]
   combined <- sum(duplicated(mutual$username))
   unique_1 <- nrow(mutual[user_anime_list_filtered$anime_id == id1,])
   unique_2 <- nrow(mutual[user_anime_list_filtered$anime_id == id2,])
-  distance <- combined / (sqrt(unique_1) * sqrt(unique_2)) # Cosine Distance
+  #distance <- 1 - combined / (unique_1 + unique_2 - combined) # Jaccard Distance
+  distance <- 1 - combined / (sqrt(unique_1)*sqrt(unique_2)) # Cosine Distance
 
   # One Piece is broken for some reason still diagnosing
   if(is.nan(distance)) {
@@ -92,7 +93,7 @@ if(should_calc_mutual){
   k <- 1
   for (i in 2:length(anime_list_filtered$anime_id)-1) {
     for(j in (i+1):length(anime_list_filtered$anime_id)) {
-      dist <- 1 - distance(anime_list_filtered$anime_id[i], anime_list_filtered$anime_id[j])
+      dist <- distance(anime_list_filtered$anime_id[i], anime_list_filtered$anime_id[j])
       mat[j, i] <- dist
       mat[i, j] <- dist
 
@@ -123,4 +124,5 @@ hc1 <- hclust(test, method = "complete")
 plot(hc1)
 
 print("Printing!")
-write.csv(distance_frame, "data/anime_distance_500.csv", row.names = FALSE)
+write.csv(anime_list_filtered, "../data/anime_genre.csv", row.names = FALSE)
+#write.csv(distance_frame, "../data/jaccard_anime_distance.csv", row.names = FALSE)
